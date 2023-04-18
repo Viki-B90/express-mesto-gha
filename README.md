@@ -1,6 +1,12 @@
 [![Tests](../../actions/workflows/tests-13-sprint.yml/badge.svg)](../../actions/workflows/tests-13-sprint.yml) [![Tests](../../actions/workflows/tests-14-sprint.yml/badge.svg)](../../actions/workflows/tests-14-sprint.yml)
 # Проект Mesto фронтенд + бэкенд
+Проект "Место" представляет собой интерактивную страницу, куда можно добавлять фотографии, удалять их и ставить лайки.
 
+В данной работе были изучены следующие темы и инструменты:
+
+* Серверная разработка на Node.js;
+* Введение в express.js;
+* Работа с базами данных на примере Mongo DB
 
 ## Директории
 
@@ -14,3 +20,6 @@
 
 `npm run start` — запускает сервер   
 `npm run dev` — запускает сервер с hot-reload
+
+Просмотреть проект можно по ссылке на GitHub:
+[Ссылка на репозиторий](https://github.com/Viki-B90/express-mesto-gha.git)
