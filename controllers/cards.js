@@ -3,7 +3,7 @@ const statusCode = require('../utils/statusCode');
 
 module.exports.getAllCards = (req, res) => {
   Cards.find({})
-    .then((cards) => res.status(statusCode.CREATED).send({ data: cards }))
+    .then((cards) => res.send({ data: cards }))
     .catch(() => res.status(statusCode.SERVER_ERROR).send({ message: 'Ошибка по умолчанию' }));
 };
 
@@ -27,7 +27,7 @@ module.exports.deleteCard = (req, res) => {
 
   Cards.findByIdAndRemove(cardId)
     .orFail(() => new Error('NotFound'))
-    .then((card) => res.status(statusCode.CREATED).send({ data: card }))
+    .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(statusCode.BAD_REQUEST).send({ message: 'Переданы некорректные данные для удаления карточки' });
@@ -46,7 +46,7 @@ module.exports.likeCard = (req, res) => {
     { new: true },
   )
     .orFail(() => new Error('NotFound'))
-    .then((card) => res.status(statusCode.CREATED).send({ data: card }))
+    .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(statusCode.BAD_REQUEST).send({ message: 'Переданы некорректные данные для постановки лайка' });
@@ -65,7 +65,7 @@ module.exports.dislikeCard = (req, res) => {
     { new: true },
   )
     .orFail(() => new Error('NotFound'))
-    .then((card) => res.status(statusCode.CREATED).send({ data: card }))
+    .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(statusCode.BAD_REQUEST).send({ message: 'Переданы некорректные данные для снятия лайка' });

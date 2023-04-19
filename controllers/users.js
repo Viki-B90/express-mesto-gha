@@ -3,7 +3,7 @@ const statusCode = require('../utils/statusCode');
 
 module.exports.getAllUsers = (req, res) => {
   User.find({})
-    .then((users) => res.status(statusCode.CREATED).send({ data: users }))
+    .then((users) => res.send({ data: users }))
     .catch(() => res.status(statusCode.SERVER_ERROR).send({ message: 'Ошибка по умолчанию' }));
 };
 
@@ -12,7 +12,7 @@ module.exports.getUser = (req, res) => {
 
   User.findById(userId)
     .orFail(() => new Error('NotFound'))
-    .then((user) => res.status(statusCode.CREATED).send({ data: user }))
+    .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(statusCode.BAD_REQUEST).send({ message: 'Переданы некорректные данные при создании пользователя' });
@@ -47,7 +47,7 @@ module.exports.updateProfile = (req, res) => {
     { new: true, runValidators: true },
   )
     .orFail(() => new Error('NotFound'))
-    .then((user) => res.status(statusCode.CREATED).send({ data: user }))
+    .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         res.status(statusCode.BAD_REQUEST).send({ message: 'Переданы некорректные данные при обновлении профиля' });
@@ -68,7 +68,7 @@ module.exports.updateAvatar = (req, res) => {
     { new: true, runValidators: true },
   )
     .orFail(() => new Error('NotFound'))
-    .then((user) => res.status(statusCode.CREATED).send({ data: user }))
+    .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         res.status(statusCode.BAD_REQUEST).send({ message: 'Переданы некорректные данные при обновлении аватара' });
