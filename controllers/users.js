@@ -68,7 +68,7 @@ module.exports.updateAvatar = (req, res) => {
     { new: true, runValidators: true },
   )
     .orFail(() => new Error('NotFound'))
-    .then((user) => res.end({ data: user }))
+    .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         res.status(codeError.BAD_REQUEST).send({ message: 'Переданы некорректные данные при обновлении аватара' });
