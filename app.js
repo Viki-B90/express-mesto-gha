@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const routesUsers = require('./routes/users');
 const routesCards = require('./routes/cards');
-const codeError = require('./utils/error');
+const statusCode = require('./utils/statusCode');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -22,7 +22,7 @@ app.use(routesUsers);
 app.use(routesCards);
 
 app.use((req, res) => {
-  res.status(codeError.NOT_FOUND).send({ message: 'Запрашиваемый URL не найден' });
+  res.status(statusCode.NOT_FOUND).send({ message: 'Запрашиваемый URL не найден' });
 });
 
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
