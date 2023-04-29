@@ -1,8 +1,26 @@
 const express = require('express');
 const mongoose = require('mongoose');
+
+const cookieParser = require('cookie-parser');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+
+const { errors } = require('celebrate');
+const { validateSignUp, validateSignIn } = require('./middlewares/validators');
+
+const handleError = require('./middlewares/handleError');
+const { NotFoundError } = require('./errors/index-errors');
+
+const auth = require('./middlewares/auth');
+const { createUser, login } = require('./controllers/users');
+
 const routesUsers = require('./routes/users');
 const routesCards = require('./routes/cards');
-const statusCode = require('./utils/statusCode');
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+});
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -10,19 +28,23 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '643ed5ac85513caf03d61cc9',
-  };
+app.post('/signup', validateSignUp, createUser);
+app.post('/signin', validateSignIn, login);
 
-  next();
-});
+app.use('/users', auth, routesUsers);
+app.use('/cards', auth, routesCards);
 
-app.use(routesUsers);
-app.use(routesCards);
+app.use(helmet());
+app.use(limiter);
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.use((req, res) => {
-  res.status(statusCode.NOT_FOUND).send({ message: 'Запрашиваемый URL не найден' });
+app.use(errors());
+app.use(handleError);
+
+app.use('*', auth, () => {
+  throw new NotFoundError('Запрашиваемый URL не найден');
 });
 
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
