@@ -22,6 +22,12 @@ const limiter = rateLimit({
   max: 100,
 });
 
+mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
+  useNewUrlParser: true,
+  // useCreateIndex: true,
+  // useFindAndModify: false,
+});
+
 const { PORT = 3000 } = process.env;
 const app = express();
 
@@ -43,12 +49,6 @@ app.use(handleError);
 
 app.use('*', auth, () => {
   throw new NotFoundError('Запрашиваемый URL не найден');
-});
-
-mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
-  useNewUrlParser: true,
-  // useCreateIndex: true,
-  // useFindAndModify: false,
 });
 
 app.listen(PORT, () => {
