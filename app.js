@@ -37,8 +37,6 @@ app.use('/cards', auth, routesCards);
 app.use(helmet());
 app.use(limiter);
 app.use(cookieParser());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 app.use(errors());
 app.use(handleError);
