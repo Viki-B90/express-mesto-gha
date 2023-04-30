@@ -9,12 +9,12 @@ const {
 } = require('../controllers/cards');
 
 const {
-  validateCardPost,
+  validateCardCreate,
   validateCardId,
 } = require('../middlewares/validators');
 
 router.get('/', getAllCards);
-router.post('/', validateCardPost, createCard);
+router.post('/', validateCardCreate, createCard);
 router.delete('/:cardId', validateCardId, deleteCard);
 router.put('/:cardId/likes', validateCardId, likeCard);
 router.delete('/:cardId/likes', validateCardId, dislikeCard);

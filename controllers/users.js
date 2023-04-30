@@ -5,13 +5,13 @@ const { jwtKey } = require('../utils/jwtKey');
 const statusCode = require('../utils/statusCode');
 const User = require('../models/user');
 
-const { NODE_ENV, JWT_SECRET } = process.env;
-
 const {
   BadRequestError,
   NotFoundError,
   ConflictError,
 } = require('../errors/index-errors');
+
+const { NODE_ENV, JWT_SECRET } = process.env;
 
 module.exports.getAllUsers = (req, res, next) => {
   User.find({})
