@@ -32,15 +32,22 @@ module.exports.deleteCard = (req, res, next) => {
   const { cardId } = req.params;
 
   Cards.findById(cardId)
-    .orFail(() => new NotFoundError('Карточка не найдена.'))
     .then((card) => {
-      if (JSON.stringify(card.owner) !== JSON.stringify(req.user.payload)) {
-        return next(new ForbiddenError('Нельзя удалять чужие карточки.'));
+      if (!card) {
+        return next(new NotFoundError('Карточка с указанным _id не найдена'));
       }
-      return card.remove()
-        .then(() => res.send({ message: 'Карточка удалена.' }));
+      if (!card.owner.equals(req.user._id)) {
+        return next(new ForbiddenError('Попытка удалить чужую карточку'));
+      }
+      return card.remove().then(() => res.send({ message: 'Карточка успешно удалена' }));
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new BadRequestError('Переданы некорректные данные'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 module.exports.likeCard = (req, res, next) => {
@@ -50,8 +57,19 @@ module.exports.likeCard = (req, res, next) => {
     { new: true },
   )
     .orFail(() => new NotFoundError('Карточка не найдена.'))
-    .then((card) => res.send(card))
-    .catch(next);
+    .then((card) => {
+      if (!card) {
+        return next(new NotFoundError('Карточка с указанным _id не найдена'));
+      }
+      return res.send({ card, message: 'Лайк успешно поставлен' });
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new BadRequestError('Переданы некорректные данные для постановки лайка'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 module.exports.dislikeCard = (req, res, next) => {
@@ -61,6 +79,17 @@ module.exports.dislikeCard = (req, res, next) => {
     { new: true },
   )
     .orFail(() => new NotFoundError('Карточка не найдена.'))
-    .then((card) => res.send(card))
-    .catch(next);
+    .then((card) => {
+      if (!card) {
+        return next(new NotFoundError('Карточка с указанным _id не найдена'));
+      }
+      return res.send({ card, message: 'Лайк успешно удален' });
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new BadRequestError('Переданы некорректные данные для снятия лайка'));
+      } else {
+        next(err);
+      }
+    });
 };

@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 
@@ -39,8 +40,8 @@ app.post('/signin', validateSignIn, login);
 
 app.use(auth);
 
-app.use('/users', routesUsers);
-app.use('/cards', routesCards);
+app.use('/users', auth, routesUsers);
+app.use('/cards', auth, routesCards);
 
 app.use(helmet());
 app.use(limiter);
@@ -49,8 +50,8 @@ app.use(cookieParser());
 app.use(errors());
 app.use(handleError);
 
-app.use((req, res, next) => {
-  next(new NotFoundError('Запрашиваемый URL не найден'));
+app.use('*', auth, () => {
+  throw new NotFoundError('Запрашиваемый URL не найден');
 });
 
 app.listen(PORT, () => {

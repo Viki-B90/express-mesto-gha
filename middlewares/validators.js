@@ -1,9 +1,19 @@
 const { celebrate, Joi } = require('celebrate');
-const { regExp } = require('../utils/regexp');
+const validator = require('validator');
+const { BadRequestError } = require('../errors/index-errors');
+const { regex } = require('../utils/regex');
+
+const validateUrl = (url) => {
+  const result = validator.isURL(url);
+  if (result) {
+    return url;
+  }
+  throw new BadRequestError('Невалидный URL');
+};
 
 const validateUserId = celebrate({
   params: Joi.object().keys({
-    userId: Joi.string().alphanum().length(24),
+    userId: Joi.string().hex().length(24),
   }),
 });
 
@@ -11,7 +21,7 @@ const validateSignUp = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().pattern(regExp),
+    avatar: Joi.string().pattern(regex),
     email: Joi.string().required().email(),
     password: Joi.string().required(),
   }),
@@ -26,27 +36,27 @@ const validateSignIn = celebrate({
 
 const validateUpdateProfile = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
-    about: Joi.string().required().min(2).max(30),
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
   }),
 });
 
 const validateUpdateAvatar = celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().required().pattern(regExp),
+    avatar: Joi.string().pattern(regex),
   }),
 });
 
 const validateCardPost = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required().pattern(regExp),
+    link: Joi.string().required().custom(validateUrl),
   }),
 });
 
 const validateCardId = celebrate({
   params: Joi.object().keys({
-    cardId: Joi.string().alphanum().length(24),
+    cardId: Joi.string().hex().length(24),
   }),
 });
 
