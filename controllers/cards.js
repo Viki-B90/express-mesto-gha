@@ -40,15 +40,10 @@ module.exports.deleteCard = (req, res, next) => {
       if (card.owner.valueOf() !== userId) throw new ForbiddenError('Вы пытаетесь удалить чужую карточку');
       card
         .remove()
-        .then(() => res.send({ card, message: 'Карточка успешно удалена' }));
+        .then(() => res.send({ card, message: 'Карточка успешно удалена' }))
+        .catch(next);
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new BadRequestError('Переданы некорректные данные'));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
 
 module.exports.likeCard = (req, res, next) => {
