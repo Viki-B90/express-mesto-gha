@@ -37,8 +37,10 @@ app.use(express.urlencoded({ extended: true }));
 app.post('/signup', validateSignUp, createUser);
 app.post('/signin', validateSignIn, login);
 
-app.use('/users', auth, routesUsers);
-app.use('/cards', auth, routesCards);
+app.use(auth);
+
+app.use('/users', routesUsers);
+app.use('/cards', routesCards);
 
 app.use(helmet());
 app.use(limiter);
@@ -47,8 +49,8 @@ app.use(cookieParser());
 app.use(errors());
 app.use(handleError);
 
-app.use('*', auth, () => {
-  throw new NotFoundError('Запрашиваемый URL не найден');
+app.use((req, res, next) => {
+  next(new NotFoundError('Запрашиваемый URL не найден'));
 });
 
 app.listen(PORT, () => {

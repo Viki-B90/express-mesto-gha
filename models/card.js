@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
-const { regex } = require('../utils/regex');
+
+// eslint-disable-next-line no-unused-vars
+const validator = require('validator');
+const { regExp } = require('../utils/regexp');
 
 const cardSchema = new mongoose.Schema({
   name: {
@@ -12,9 +15,7 @@ const cardSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Поле "link" должно быть заполнено'],
     validate: {
-      validator(image) {
-        return regex.test(image);
-      },
+      validator: (image) => regExp.test(image),
       message: 'Недействительный URL картинки',
     },
   },
