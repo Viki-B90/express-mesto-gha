@@ -52,7 +52,7 @@ module.exports.likeCard = (req, res, next) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .orFail(() => new NotFoundError('Карточка не найдена.'))
+    .orFail(() => new NotFoundError('Карточка с указанным _id не найдена'))
     .then((card) => {
       if (!card) {
         return next(new NotFoundError('Карточка с указанным _id не найдена'));
@@ -74,7 +74,7 @@ module.exports.dislikeCard = (req, res, next) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .orFail(() => new NotFoundError('Карточка не найдена.'))
+    .orFail(() => new NotFoundError('Карточка с указанным _id не найдена'))
     .then((card) => {
       if (!card) {
         return next(new NotFoundError('Карточка с указанным _id не найдена'));

@@ -8,7 +8,7 @@ const validateUrl = (url) => {
   if (result) {
     return url;
   }
-  throw new BadRequestError('Невалидный URL');
+  throw new BadRequestError('Некорректный URL');
 };
 
 const validateUserId = celebrate({
